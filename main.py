@@ -1,13 +1,15 @@
 import sys
 import sqlite3
 
-from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QMessageBox
 
+from main_interface import Ui_MainWindow
+from addEditCoffeeForm import Ui_Form
 
-class DialogAddOrChangeCoffee(QDialog):
+
+class DialogAddOrChangeCoffee(QDialog, Ui_Form):
     """Диалоговое окно для добавления или изменения кофе"""
 
     def __init__(self, mode: str, degrees: list, values=()):
@@ -15,7 +17,7 @@ class DialogAddOrChangeCoffee(QDialog):
 
         self.res = None
 
-        uic.loadUi("addEditCoffeeForm.ui", self)
+        self.setupUi(self)
 
         self.setWindowTitle(f'{mode} кофе')
         self.input_degree.addItems(degrees)
@@ -70,18 +72,18 @@ class DialogAddOrChangeCoffee(QDialog):
         return self.res
 
 
-class Window(QMainWindow):
+class Window(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
 
-        self.connection = sqlite3.connect("coffee.sqlite")
+        self.connection = sqlite3.connect("data/coffee.sqlite")
         self.cursor = self.connection.cursor()
 
         self.headers = ['ID', 'название сорта', 'степень обжарки',
                         'молотый/в зернах',
                         'описание вкуса', 'цена', 'объем упаковки']
 
-        uic.loadUi("main.ui", self)
+        self.setupUi(self)
 
         self.setGeometry(200, 200, 1200, 600)
         self.setMinimumSize(600, 400)
